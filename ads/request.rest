@@ -1,0 +1,121 @@
+POST http://localhost:8000/api/ads
+Content-Type: application/json
+
+{
+    "title": "Sleek Smartphone",
+    "description": "Experience the future of mobile technology with our Sleek Smartphone.",
+    "imageUrl": "https://images.fonearena.com/blog/wp-content/uploads/2021/09/Xiaomi-11-Lite-NE-5G_FoneArena-2-1024x633.jpg",
+    "targetUrl": "https://www.amazon.com/-/es/desbloqueado-pulgadas-T-Moble-paquete-cargador/dp/B0BX4MQH3G/ref=sr_1_2",
+    "status": "active"
+}
+
+###
+
+POST http://localhost:8000/api/ads
+Content-Type: application/json
+
+{
+    "title": "Comfortable Chair",
+    "description": "Add a touch of comfort to your home with our Comfortable Chair.",
+    "imageUrl": "https://media.wired.com/photos/640f8bc150a2c32c8d5d282d/191:100/w_2580,c_limit/Branch-Verve-Chair-Gear.jpg",
+    "targetUrl": "https://www.cadeiraspro.pt/cadeira-ergonomica-lambo-apoia-cabeas-ajustavel-suporte-lombar-comodidade-em-preto.html",
+    "status": "active"
+}
+
+###
+
+POST http://localhost:8000/api/ads
+Content-Type: application/json
+
+{
+    "title": "Running Shoes",
+    "description": "Improve your performance with our new Running Shoes.",
+    "imageUrl": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/503e9eea-02dd-4f8f-91e3-6ad74a9225cc/quest-5-road-running-shoes-lf4MST.png",
+    "targetUrl": "https://www.nike.com/pt/t/sapatilhas-de-running-revolution-6-FgfhgR/DC3728-003",
+    "status": "active"
+}
+
+###
+
+POST http://localhost:8000/api/ads
+Content-Type: application/json
+
+{
+    "title": "Cooling Fan",
+    "description": "Stay cool this summer with our energy efficient Cooling Fan.",
+    "imageUrl": "https://media.cnn.com/api/v1/images/stellar/prod/210817150303-underscored-best-cooling-fans-rowenta-vu5670-pedestal-product-card-pic.jpg",
+    "targetUrl": "https://pt.trotec.com/shop/ventilador-de-pe-tve-18-s.html",
+    "status": "active"
+}
+
+###
+
+POST http://localhost:8000/api/ads
+Content-Type: application/json
+
+{
+    "title": "Stylish Watch",
+    "description": "Upgrade your style with our new collection of Stylish Watches.",
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYSmgxZdW1SnahsgHCKyPpa0hydYx9p0fauA&usqp=CAU",
+    "targetUrl": "https://m.indiamart.com/proddetail/ladies-stylish-analog-watch-21295780112.html",
+    "status": "active"
+}
+
+
+###
+POST http://localhost:8000/api/ads
+Content-Type: application/json
+
+{
+    "title": "Ad 2",
+    "description": "aasasa jghjghs",
+    "imageUrl": "https://bonsrapazes.com/wp-content/uploads/2018/05/Honda-Monkey-Is-Coming-Back-for-2018-2.jpg",
+    "targetUrl": "https://www.ebay.com/",
+    "status":"paused"
+
+}
+
+
+###
+GET http://localhost:3000/api/ads
+
+###
+GET http://localhost:3000/api/ads/64235ce9a12a03ebaf5e018b
+
+
+###
+DELETE  http://localhost:3000/api/ads/64237db33d3791f490ea2d78
+
+###
+PUT   http://localhost:3000/api/ads/64236a2d5e7a6fc2a1dee3e6
+Content-Type: application/json
+
+{
+    "title": "UPDATE AD",
+    "description": "aasADSSFASDFASDFADSFAs",
+    "imageUrl": "https://static.globalnoticias.pt/dv/image.jpg?brand=DV&type=generate&guid=ca020700-1b32-4a74-9651-6c592fa50083",
+    "targetUrl": "google.com",
+    "status":"archived"
+
+}
+
+###
+POST http://localhost:8000/api/ads/6476808e3c9722c58692fdb0
+
+
+###
+GET http://localhost:3000/api/ads/64235ce9a12a03ebaf5e018b/stats
+
+
+###
+GET http://localhost:3000/api/ads?status=active
+
+
+###
+GET http://localhost:3000/api/ads?status=paused
+
+###
+GET http://localhost:3000/api/ads/random
+
+###
+GET http://localhost:8000/ads/getAll

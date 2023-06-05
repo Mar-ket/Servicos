@@ -1,0 +1,186 @@
+swagger: "2.0"
+info:
+  title: Sales API
+  description: API for creating and managing sales
+  version: "1.0"
+
+paths:
+  /sales:
+    get:
+      tags:
+        - Sales
+      summary: List all sales
+      responses:
+        200:
+          description: A list of sales
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Sale"
+    post:
+      tags:
+        - Sales
+      summary: Create a sale
+      parameters:
+        - name: sale
+          in: body
+          description: The sale object to create
+          required: true
+          schema:
+            $ref: "#/definitions/Sale"
+      responses:
+        201:
+          description: The created sale
+          schema:
+            $ref: "#/definitions/Sale"
+  /sales/{id}:
+    get:
+      tags:
+        - Sales
+      summary: List a sale
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the sale
+          required: true
+          type: string
+      responses:
+        200:
+          description: The sale object
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Sale"
+  /sales/uid/{uid}:
+    get:
+      tags:
+        - Sales
+      summary: List all sales from a user
+      parameters:
+        - name: uid
+          in: path
+          description: The UID of the user
+          required: true
+          type: string
+      responses:
+        200:
+          description: A list of sales for a user
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Sale"
+  /sales/checkout/{id}:
+    post:
+      tags:
+        - Sales
+      summary: Checkout a sale
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the sale to checkout
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: The checkout request body
+          required: true
+          schema:
+            items:
+              $ref: "#/definitions/CheckoutBody"
+      responses:
+        200:
+          description: The payment result
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              payment_link:
+                type: string
+                example: "https://checkout.stripe.com/c/pay/cs_test_b1zCfukRASzzonNylSYFUsvAiIT6HQVdd3GsgXqFrCSRZLxDwAXqCAdgqu#fidkdWxOYHwnPyd1blpxYHZxWjA0SG9KdzNAcE9mU3AwRlI2MjJnXFZnZ31AQ0hjQFVddUN8X0tiMUhVZmwwa1dhcTFpcTxoTlBwdjFBb11dUjx0Rn8zcXBSakBvXU5tSDAxVEtcUEljbmBSNTVgNkBOR3B3TCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl"
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "One or more parameters have incorrect values"
+        404:
+          description: Sale not found
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Sale with id 123 not found"
+        500:
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "Internal Server Error"
+definitions:
+  Sale:
+    type: object
+    required:
+      - id
+      - customer_id
+      - products
+      - total
+    properties:
+      id:
+        type: integer
+        example: 1
+      customer_id:
+        type: integer
+        example: 35
+      payment_id:
+        type: string
+        example: "cs_test_b1zCfukRASzzonNylSYFUsvAiIT6HQVdd3GsgXqFrCSRZLxDwAXqCAdgqu"
+      payment_status:
+        type: string
+        enum:
+          - unpaid
+          - paid
+          - no_payment_required
+        example: "paid"
+      products:
+        type: array
+        items:
+          type: object
+          properties:
+            product_id:
+              type: integer
+              example: 2234
+            quantity:
+              type: integer
+              example: 1
+      amount:
+        type: number
+        format: double
+        example: 89.99
+  CheckoutBody:
+    type: object
+    required:
+      - successUrl
+      - cancelUrl
+    properties:
+      successUrl:
+        type: string
+        example: "http://example.com/success"
+      cancelUrl:
+        type: string
+        example: "http://example.com/cancel"
