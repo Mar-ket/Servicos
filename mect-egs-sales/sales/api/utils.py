@@ -1,3 +1,4 @@
+import os
 import requests
 from sales.api.models import Sale
 from django.conf import settings
@@ -20,7 +21,7 @@ def saleCheckout(request, id):
 
     for product in sale.products:
         object = dict()
-        response = requests.get(settings.PRODUCTS_API_URL + '/' + str(product['product_id']) + '/')
+        response = requests.get(os.environ.get('PRODUCTS_API_URL') + '/' + str(product['product_id']) + '/')
         
         if response.status_code != 200:
             return JsonResponse({'error': 'Error in products API'}, status=500)
@@ -31,13 +32,13 @@ def saleCheckout(request, id):
         products.append(object)
 
     data = {
-        "currency": settings.DEFAULT_CURRENCY,
+        "currency": os.environ.get('DEFAULT_CURRENCY'),
         "successUrl": success_url,
         "cancelUrl": cancel_url,
         "products": products
     }
 
-    response = requests.post(settings.PAYMENTS_API_URL+'/pay', json=data)
+    response = requests.post(os.environ.get('PAYMENTS_API_URL')+'/pay', json=data)
 
     if response.status_code != 200:
         return JsonResponse({'error': 'Error in payments API'}, status=500)

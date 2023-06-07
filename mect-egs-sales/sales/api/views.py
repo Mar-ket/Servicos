@@ -1,4 +1,5 @@
 import requests
+import os
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, views
 from rest_framework import permissions
@@ -54,13 +55,13 @@ class SaleCheckout(views.APIView):
             return JsonResponse({'error': 'successUrl and cancelUrl are required'}, status=400)
 
         data = {
-            "currency": settings.DEFAULT_CURRENCY,
+            "currency": os.environ.get('DEFAULT_CURRENCY'),
             "successUrl": success_url,
             "cancelUrl": cancel_url,
             "products": sale.products
         }
 
-        response = requests.post(settings.PAYMENTS_API_URL+'/pay', json=data)
+        response = requests.post(os.environ.get('PAYMENTS_API_URL')+'/pay', json=data)
 
         if response.status_code != 200:
             return JsonResponse({'error': 'Error in payments API'}, status=500)

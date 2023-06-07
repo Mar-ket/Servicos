@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -78,11 +79,11 @@ WSGI_APPLICATION = 'sales.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sales_api',
-        'USER': 'admin',
-        'PASSWORD': 'pass',
-        'HOST': 'sales_db',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
@@ -133,6 +134,3 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-DEFAULT_CURRENCY = 'eur'
-PAYMENTS_API_URL = 'http://payments:8081/payments'
-PRODUCTS_API_URL = 'http://prods1:8080/products/product'
