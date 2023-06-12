@@ -44,7 +44,7 @@ def login():
         return {"error": "There were required fields which were not provided."}, 400
 
     if provider.upper() == "PARSE":
-        r = requests.post("http://parse:1337/parse/login", headers={
+        r = requests.post(f"{PARSE_URL}/parse/login", headers={
             "X-Parse-Application-Id": "myappID",
             "X-Parse-REST-API-Key": "mymasterKey",
             "X-Parse-Revocable-Session": "1",
@@ -79,12 +79,12 @@ def logout():
 
     token = request.headers["Authorization"].split("Bearer ")[1]
     app.logger.info(token)
-    decoded_token = jwt.decode(token,key="NqxwnqXe4GMIW0hmnHTvkOhGbopi6sC7",algorithms="HS256")
+    decoded_token = jwt.decode(token,key=app.config["JWT_SECRET"],algorithms="HS256")
     app.logger.info(decoded_token)
 
     if decoded_token.get("provider") == "parse":
         sessionToken = redis_client.get(name=decoded_token["username"])
-        r = requests.post('http://parse:1337/parse/logout', headers={
+        r = requests.post(f'{app.config["PARSE_URL"]}/parse/logout', headers={
             "X-Parse-Application-Id": "myappID",
             "X-Parse-REST-API-Key": "mymasterKey",
             "X-Parse-Session-Token": sessionToken
@@ -104,11 +104,11 @@ def logout():
 def refresh():
     # check if refresh_token is valid
     token = request.headers["Authorization"].split("Bearer ")[1]
-    decoded_token = jwt.decode(token,key="NqxwnqXe4GMIW0hmnHTvkOhGbopi6sC7",algorithms="HS256")
+    decoded_token = jwt.decode(token,key=app.config["JWT_SECRET"],algorithms="HS256")
     username = decoded_token["username"]
 
     r_token = request.json()["refresh_token"]
-    decoded_r_token = jwt.decode(token,key="NqxwnqXe4GMIW0hmnHTvkOhGbopi6sC7",algorithms="HS256")
+    decoded_r_token = jwt.decode(token,key=app.config["JWT_SECRET"],algorithms="HS256")
     uid = decoded_r_token["uid"]
     exp = decoded_r_token["exp"]
 
@@ -153,7 +153,7 @@ def signup():
     print(user)
 
     if provider.upper() == "PARSE":
-        r = requests.post("http://parse:1337/parse/users", data=json.dumps(user), headers={
+        r = requests.post(f"{PARSE_URL}/parse/users", data=json.dumps(user), headers={
             "X-Parse-Application-Id": "myappID",
             "X-Parse-REST-API-Key": "mymasterKey",
             "X-Parse-Revocable-Session": "1",
@@ -184,13 +184,13 @@ def get_token_and_refresh_token(username, uid, provider):
     # build jwt token
     exp = (datetime.datetime.now() + (datetime.timedelta(hours=1))).timestamp()
     token = jwt.encode(payload={"username": username, "exp": int(exp), "provider": provider},
-                       key="NqxwnqXe4GMIW0hmnHTvkOhGbopi6sC7",
+                       key=app.config["JWT_SECRET"],
                        algorithm="HS256",
                        headers={"alg": "HS256", "typ": "JWT", "kid": "0jphHBdV5tXrQR9xIt8RDGjcHFSUptPm"})
 
     refresh_exp = (datetime.datetime.now() + (datetime.timedelta(days=1))).timestamp()
     refresh_token = jwt.encode(payload={"uid": uid, "exp": int(refresh_exp), "provider": provider},
-                               key="NqxwnqXe4GMIW0hmnHTvkOhGbopi6sC7",
+                               key=app.config["JWT_SECRET"],
                                algorithm="HS256",
                                headers={"alg": "HS256", "typ": "JWT", "kid": "0jphHBdV5tXrQR9xIt8RDGjcHFSUptPm"})
 
