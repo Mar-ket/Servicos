@@ -26,8 +26,8 @@ app.set("view engine", "ejs");
 
 app.get("/ads", async (req, res) => {
   try {
-    const response1 = await axios.get("http://ads:8000/ads/random");
-    const response2 = await axios.get("http://ads:8000/ads/random");
+    const response1 = await axios.get(`${process.env.ADS_URI}/ads/random`);
+    const response2 = await axios.get(`${process.env.ADS_URI}/ads/random`);
 
     const ads = [response1.data, response2.data];
 
@@ -41,6 +41,7 @@ app.get("/ads", async (req, res) => {
 
 app.listen(process.env.PORT, '0.0.0.0', function () {
   console.log(`Server Online on port ${process.env.PORT}!`);
+  console.log(`Server Online on port ${process.env.MONGODB_URI}!`);
 });
 
 

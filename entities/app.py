@@ -97,6 +97,16 @@ def getEntitiesById(id):
     entt = entityToJson(data)
     return entt
 
+
+@app.route('/v1/entity/external/<id>', methods=['GET'])
+def getByExternalId(id):    
+    c = sqlite3.connect("entities.db").cursor()
+    c.execute("SELECT * FROM entities WHERE externalID=?", (id,))
+    data = c.fetchone()
+
+    entt = entityToJson(data)
+    return entt
+
 @app.route('/v1/entity/<id>', methods=['PUT'])
 def approveEntity(id):
     db = sqlite3.connect("entities.db")
@@ -114,6 +124,7 @@ def removeEntity(id):
     c.execute("DELETE FROM entities WHERE id=?", (id))
     db.commit()
     return json.dumps("Entity was successfully removed")
+
 
 @app.route('/v1/entity/<id>/sku/<skuid>', methods=['PUT'])
 def addSKU(id, skuid):

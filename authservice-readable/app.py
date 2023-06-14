@@ -44,7 +44,7 @@ def login():
         return {"error": "There were required fields which were not provided."}, 400
 
     if provider.upper() == "PARSE":
-        r = requests.post(f"{PARSE_URL}/parse/login", headers={
+        r = requests.post(f"{app.config['PARSE_URL']}/parse/login", headers={
             "X-Parse-Application-Id": "myappID",
             "X-Parse-REST-API-Key": "mymasterKey",
             "X-Parse-Revocable-Session": "1",
@@ -150,10 +150,10 @@ def signup():
 
     if "phone_number" in data:
         user["phone"] = data["phone_number"]
-    print(user)
+    app.logger.info(user)
 
     if provider.upper() == "PARSE":
-        r = requests.post(f"{PARSE_URL}/parse/users", data=json.dumps(user), headers={
+        r = requests.post(f'{app.config["PARSE_URL"]}/parse/users', data=json.dumps(user), headers={
             "X-Parse-Application-Id": "myappID",
             "X-Parse-REST-API-Key": "mymasterKey",
             "X-Parse-Revocable-Session": "1",
@@ -175,25 +175,32 @@ def signup():
     else:
         return {"error": "Provider not yet available"}
 
-    redis_client.set(name=username, value=r.json()["sessionToken"])
+    try:
+        redis_client.set(name=username, value=r.json()["sessionToken"])
+    except:
+        app.logger.info("redis")
 
     return resp, 200
 
 
 def get_token_and_refresh_token(username, uid, provider):
     # build jwt token
-    exp = (datetime.datetime.now() + (datetime.timedelta(hours=1))).timestamp()
+    exp = (datetime.datetime.now() + (datetime.timedelta(hours=6))).timestamp()
+
+
+    app.logger.info(f'JWT SECRET {app.config["JWT_SECRET"]}, JWT KID {app.config["JWT_KID"]}')
     token = jwt.encode(payload={"username": username, "exp": int(exp), "provider": provider},
                        key=app.config["JWT_SECRET"],
                        algorithm="HS256",
-                       headers={"alg": "HS256", "typ": "JWT", "kid": "0jphHBdV5tXrQR9xIt8RDGjcHFSUptPm"})
+                       headers={"alg": "HS256", "typ": "JWT", "kid": app.config["JWT_KID"]})
 
     refresh_exp = (datetime.datetime.now() + (datetime.timedelta(days=1))).timestamp()
     refresh_token = jwt.encode(payload={"uid": uid, "exp": int(refresh_exp), "provider": provider},
                                key=app.config["JWT_SECRET"],
                                algorithm="HS256",
-                               headers={"alg": "HS256", "typ": "JWT", "kid": "0jphHBdV5tXrQR9xIt8RDGjcHFSUptPm"})
+                               headers={"alg": "HS256", "typ": "JWT", "kid": app.config["JWT_KID"]})
 
+    app.logger.info({"token": token, "refresh_token": refresh_token})
     return {"token": token, "refresh_token": refresh_token}
 
 

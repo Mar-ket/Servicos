@@ -61,7 +61,7 @@ class SaleCheckout(views.APIView):
             "products": sale.products
         }
 
-        response = requests.post(os.environ.get('PAYMENTS_API_URL')+'/pay', json=data)
+        response = requests.post(os.environ.get('PAYMENTS_API_URL')+'/v1/payments/pay', json=data)
 
         if response.status_code != 200:
             return JsonResponse({'error': 'Error in payments API'}, status=500)

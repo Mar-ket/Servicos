@@ -10,7 +10,14 @@ print(os.listdir("/tmp/secrets/auth-jwt-secret"))
 
 with open("/tmp/secrets/auth-jwt-secret/auth-jwt-secret", 'r') as f:
     JWT_SECRET = f.read()
-    print(f"Secret Key: {JWT_SECRET}")
+
 with open("/tmp/secrets/auth-app-secret/auth-app-secret", 'r') as f:
     SECRET_KEY = f.read()
-    print(f"Secret Key: {SECRET_KEY}")
+
+with open("/tmp/secrets/auth-jwt-kid/auth-jwt-kid", 'r') as f:
+    JWT_KID = f.read()
+
+
+JWT_KID = JWT_KID.replace("\n", "")
+JWT_SECRET = JWT_SECRET.replace("\n", "")
+SECRET_KEY = SECRET_KEY.replace("\n", "")
